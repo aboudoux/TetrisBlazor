@@ -1,0 +1,213 @@
+﻿@using System.Threading
+@using Microsoft.JSInterop
+@using TetrisBlazor.Core
+@inject IJSRuntime JSRuntime
+    
+<Grid>
+    <RowDefinitions>
+        <RowDefinition Height="50" />
+        <RowDefinition Height="100" />
+        <RowDefinition />
+    </RowDefinitions>
+    <ColumnDefinitions>
+        <ColumnDefinition />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition />
+    </ColumnDefinitions>
+    <Content>
+        <GridElement HorizontalAlignment="@Alignment.Center" VerticalAlignment="@Alignment.Center" Row="1" Column="2">
+            <Animation Effect="@Effect.FadeInLeft" Speed="@Speed.Faster" Enabled="@LevelChanged">
+                <h5 class="gamefont" style="font-size: 40px; color: #27defb">LEVEL @game.Level</h5>
+            </Animation>
+        </GridElement>
+        <GridElement Row="2" Column="1" HorizontalAlignment="@Alignment.End">
+            <div >
+                <h4 class="cartridge-center gamefont" style="color: #bbaf22; @(game.Over ? "color:red;" : "")">Score<br>@game.Score</h4>
+            </div>
+        </GridElement>
+        <GridElement Row="2" Column="3" HorizontalAlignment="@Alignment.Start">
+            <div >
+                <h5 class="cartridge-center gamefont" style="color: crimson;">@game.Clock</h5>
+            </div>
+        </GridElement>
+        <GridElement Row="2" RowSpan="3" HorizontalAlignment="@Alignment.Center" Column="2">
+            <Animation Effect="@Effect.Shake" Speed="@TimeSpan.FromMilliseconds(400)" Enabled="game.IsTetris" >
+                <div @ref="OuterDiv" tabindex="0" @onkeydown="@KeyPressed" @ontouchstart="TouchStart"  @ontouchmove="TouchMove" @onclick="OnClick" class="gameboard">
+                    <Grid Width="@(Game.Width * 20)" Height="@(Game.Height * 20)">
+                        <ColumnDefinitions>
+                            @for (int col = 1; col <= Game.Width; col++) {
+                                <ColumnDefinition Width="*" />
+                            }
+                        </ColumnDefinitions>
+                        <RowDefinitions>
+                            @for (int row = 1; row <= Game.Height; row++) {
+                                <RowDefinition Height="*" />
+                            }
+                        </RowDefinitions>
+                        <Content>
+
+                            @foreach (var block in game.AllBlocks()) {
+                                <GridElement Row="@block.Row" Column="@block.Column">
+                                    <Animation Effect="@Effect.Flash" Speed="@Speed.Faster" Enabled="@(game.IsInCompletedLine(block))" OnAnimationEnd="@AnimationEnd">
+                                        <div style="border: black thin solid; background-color: @block.HexColor; width: 100%; height: 100%;"></div>
+                                    </Animation>
+                                </GridElement>
+                            }
+                        </Content>
+                    </Grid>
+                </div>
+            </Animation>
+        </GridElement>
+        @if (game.Over)
+        {
+            <GridElement Row="2" RowSpan="3" Column="2" HorizontalAlignment="@Alignment.Center" VerticalAlignment="@Alignment.Center">
+                <Animation Effect="@Effect.JackInTheBox" Speed="@Speed.Slow">
+                    <a onclick="location.reload();" class="gameOver">GAME OVER</a>
+                </Animation>
+            </GridElement>
+        }
+    </Content>
+</Grid>
+
+<style>
+    .cartridge-center {
+        text-align: center;
+        padding-top: 25px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .gameboard {
+        outline: none;
+        border: gray solid 5px;
+        border-radius: 10px;
+        background-color: black;
+    }
+
+    .gamefont {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 4vw;
+    }
+
+    .gameOver {
+        box-shadow: 0px 0px 0px 0px #1c1b18;
+        background: linear-gradient(to bottom, #eae0c2 5%, #ccc2a6 100%);
+        background-color: #eae0c2;
+        border-radius: 33px;
+        border: 1px solid #333029;
+        display: inline-block;
+        cursor: pointer;
+        color: #505739;
+        font-family: Arial;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 32px 76px;
+        text-decoration: none;
+        text-shadow: 0px 1px 0px #ffffff;
+    }
+        
+    .gameOver:hover {
+         background:linear-gradient(to bottom, #ccc2a6 5%, #eae0c2 100%);
+         background-color:#ccc2a6;
+     }
+    
+    .gameOver:active {
+        position: relative;
+        top: 1px;
+    }
+</style>
+
+@code
+{
+    Game game;
+    protected ElementReference OuterDiv;
+
+    protected override void OnInitialized()
+    {
+        game = Game.New();
+        game.Tick += Render;
+        game.AddShape();
+        game.Start();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender)
+            JSRuntime.InvokeVoidAsync("TetrisComponent.SetFocusToElement", OuterDiv);
+    }
+
+
+    private void Render(object sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+        JSRuntime.InvokeVoidAsync("TetrisComponent.SetFocusToElement", OuterDiv);
+        if (_currentLevel != game.Level)
+        {
+            LevelChanged = true;
+            _currentLevel = game.Level;
+        }
+        else
+            LevelChanged = false;
+    }
+
+    private int _currentLevel;
+    private bool LevelChanged { get; set; }
+
+    private void AnimationEnd()
+    {
+        game.RemoveCompletedLines();
+    }
+
+    private double _lastClientX;
+    private double _lastClientY;
+
+    private void TouchStart(TouchEventArgs arg)
+    {
+        _lastClientY = arg.ChangedTouches.First().ClientY;
+        _lastClientX = arg.ChangedTouches.First().ClientX;
+    }
+
+    private void TouchMove(TouchEventArgs args) {
+        const int gap = 10;
+        var clientX = args.TargetTouches.FirstOrDefault()?.ClientX;
+        var clientY = args.ChangedTouches.FirstOrDefault()?.ClientY;
+        if (!clientX.HasValue || !clientY.HasValue) return;
+
+        if ((clientX) < (_lastClientX - gap)) {
+            game.MoveLeft();
+            _lastClientX = clientX.Value;
+        }
+        else if (clientX > (_lastClientX + gap)) {
+            game.MoveRight();
+            _lastClientX = clientX.Value;
+        }
+        else if(clientY > (_lastClientY + gap))
+        {
+            game.MoveDown();
+            _lastClientY = clientY.Value;
+        }
+    }
+
+    private void OnClick(MouseEventArgs arg)
+    {
+        game.Turn();
+    }
+
+    private void KeyPressed(KeyboardEventArgs key)
+{
+        if (game.Over)
+        {
+            game.Tick -= Render;
+            return;
+        }
+        switch (key.Key)
+        {
+            case "s":game.Start();break;
+            case "ArrowUp": game.Turn(); break;
+            case "ArrowDown": game.MoveDown(); break;
+            case "ArrowLeft": game.MoveLeft(); break;
+            case "ArrowRight": game.MoveRight(); break;
+        }
+        StateHasChanged();
+    }
+}

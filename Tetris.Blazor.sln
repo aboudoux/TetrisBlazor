@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TetrisBlazor", "Tetris.Blazor\TetrisBlazor.csproj", "{190EE7E8-3C40-41EC-A197-0B8117A205F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tetris.Blazor.Tests", "Tetris.Blazor.Tests\Tetris.Blazor.Tests.csproj", "{A6B9BFB0-AC37-4268-882C-BB1323C0D3C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "SampleApp\SampleApp.csproj", "{CC6779D4-B481-4091-AFB1-9BDD1895F952}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WasmApp", "WasmApp\WasmApp.csproj", "{3CAE81AE-FB20-4C92-A28F-04C8996D8E4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{190EE7E8-3C40-41EC-A197-0B8117A205F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190EE7E8-3C40-41EC-A197-0B8117A205F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190EE7E8-3C40-41EC-A197-0B8117A205F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190EE7E8-3C40-41EC-A197-0B8117A205F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B9BFB0-AC37-4268-882C-BB1323C0D3C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B9BFB0-AC37-4268-882C-BB1323C0D3C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B9BFB0-AC37-4268-882C-BB1323C0D3C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B9BFB0-AC37-4268-882C-BB1323C0D3C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC6779D4-B481-4091-AFB1-9BDD1895F952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6779D4-B481-4091-AFB1-9BDD1895F952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6779D4-B481-4091-AFB1-9BDD1895F952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6779D4-B481-4091-AFB1-9BDD1895F952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CAE81AE-FB20-4C92-A28F-04C8996D8E4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CAE81AE-FB20-4C92-A28F-04C8996D8E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CAE81AE-FB20-4C92-A28F-04C8996D8E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CAE81AE-FB20-4C92-A28F-04C8996D8E4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C12DA6D-5ABF-428F-91BE-518C3F34110E}
+	EndGlobalSection
+EndGlobal

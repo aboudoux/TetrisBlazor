@@ -1,0 +1,122 @@
+﻿@page "/"
+
+@if (GameStarted) {
+    <Tetris />
+}
+else {
+
+<div style="height: 100vh;">
+    <Grid>
+        <RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="2*" />
+            <RowDefinition />
+        </RowDefinitions>
+        <Content>
+            <GridElement Row="1" HorizontalAlignment="@Alignment.Center" VerticalAlignment="@Alignment.Center">
+                <h1 class="tetris-title">Tetris Blazor</h1>
+                <h3 class="author">By Aurelien BOUDOUX</h3>
+            </GridElement>
+            <GridElement Row="2" HorizontalAlignment="@Alignment.Center" VerticalAlignment="@Alignment.Center">
+                <a @onclick="@(() => GameStarted = true)" class="start-button">START</a>
+            </GridElement>
+            <GridElement Row="3" VerticalAlignment="@Alignment.Center">
+                <p style="text-align: center; color: #00ffe7;">Powered by <a target="_blank" href="https://github.com/aboudoux/BlazorAnimation" class="linkcolor">BlazorAnimation</a> and <a target="_blank" href="https://github.com/aboudoux/WpfGridLayout.Blazor" class="linkcolor">WpfGridLayout.Blazor</a></p>
+                <a target="_blank" href="https://github.com/aboudoux/Tetris" class="github"><img src="github.png" style="width: 32px; height: 32px;"> Contribute on github </a>
+            </GridElement>
+        </Content>
+    </Grid>
+</div>
+    
+}
+
+<style>
+
+    .linkcolor {
+        color:#efff00;
+    }
+
+    .linkcolor:hover {
+        color: yellow;
+    }
+
+    .github {
+        color: black; 
+        font-weight: bold;
+        margin-left: 30px;
+    }
+
+    .start-button {
+        box-shadow: inset 0px 1px 7px 1px #fff6af;
+        background: linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+        background-color: #ffec64;
+        border-radius: 19px;
+        border: 2px solid #ffaa22;
+        display: inline-block;
+        cursor: pointer;
+        color: #333333;
+        font-family: Arial;
+        font-size: 28px;
+        font-weight: bold;
+        padding: 11px 53px;
+        text-decoration: none;
+        text-shadow: 0px 2px 0px #ffee66;
+    }
+    .start-button:hover {
+        background: linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+        background-color: #ffab23;
+    }
+    .start-button:active {
+        position: relative;
+        top: 1px;
+    }
+
+
+    .tetris-title {
+        text-align: center;
+        font-family: 'Orbitron', sans-serif;
+        color: yellow;
+        font-size: 100px;
+    }
+
+    .author {
+        font-family: 'Quattrocento Sans', sans-serif;
+        color: chartreuse;
+    }
+</style>
+
+@code
+{
+    private bool GameStarted { get; set; }
+    private TimeSpan AnimationDelay { get; set; } = TimeSpan.FromMilliseconds(3000);
+
+    private void AnimationEnd()
+    {
+        AnimationDelay = AnimationDelay.Add(TimeSpan.FromMilliseconds(1));
+        StateHasChanged();
+    }
+}
+
+@if (GameStarted)
+{
+    <style>
+        html, body {
+            background-image: url('../almagami150900132.jpg');
+            background-repeat: repeat;
+            background-size: auto;
+        }
+    </style>
+    
+}
+else
+{
+    <style>
+        html, body {
+            height: 100%;
+            background-image: url('../tetris-1.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+}
